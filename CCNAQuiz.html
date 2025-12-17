@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCNA Cyber Terminal Quiz By 🕷️ Shan Pandit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #0c0c0c;
+            color: #33ff33;
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 25% 25%, #162707 0%, transparent 5%),
+                radial-gradient(circle at 75% 75%, #162707 0%, transparent 5%);
+            background-size: 50px 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .terminal-window {
+            background-color: #0a0a0a;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(51, 255, 51, 0.2);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .terminal-header {
+            background-color: #1a1a1a;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #33ff33;
+        }
+        
+        .terminal-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .close { background-color: #ff5f56; }
+        .minimize { background-color: #ffbd2e; }
+        .maximize { background-color: #27c93f; }
+        
+        .terminal-body {
+            padding: 20px;
+            min-height: 400px;
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        #start-screen {
+            display: block;
+        }
+        
+        h1, h2, h3 {
+            color: #ffcc00;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #33ff33;
+            padding-bottom: 10px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(51, 255, 51, 0.7);
+            letter-spacing: 2px;
+        }
+        
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .btn {
+            background-color: #1a1a1a;
+            color: #33ff33;
+            border: 1px solid #33ff33;
+            border-radius: 3px;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+            width: 100%;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .btn:hover {
+            background-color: #33ff33;
+            color: #0c0c0c;
+            box-shadow: 0 0 15px rgba(51, 255, 51, 0.5);
+        }
+        
+        .btn:active {
+            transform: translateY(2px);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .stat-box {
+            background-color: #1a1a1a;
+            border: 1px solid #33ff33;
+            border-radius: 3px;
+            padding: 10px;
+            text-align: center;
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        
+        .progress-container {
+            height: 12px;
+            background-color: #1a1a1a;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+            border: 1px solid #33ff33;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background-color: #33ff33;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .level-indicator {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+        
+        .question-number {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #33ff33;
+        }
+        
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.5;
+            padding: 15px;
+            background-color: #1a1a1a;
+            border: 1px solid #33ff33;
+            border-radius: 3px;
+        }
+        
+        .correct {
+            background-color: #1a3a1a !important;
+            border-color: #00ff88 !important;
+            color: #00ff88 !important;
+        }
+        
+        .incorrect {
+            background-color: #3a1a1a !important;
+            border-color: #ff0055 !important;
+            color: #ff0055 !important;
+        }
+        
+        .game-over {
+            text-align: center;
+        }
+        
+        .final-score {
+            font-size: 3rem;
+            color: #ffcc00;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+            margin: 20px 0;
+        }
+        
+        .level-up {
+            text-align: center;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .sound-control {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #1a1a1a;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #33ff33;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .command-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .prompt {
+            color: #ffcc00;
+            margin-right: 10px;
+        }
+        
+        .content-box {
+            background-color: #1a1a1a;
+            border: 1px solid #33ff33;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .warning {
+            color: #ff5f56;
+            font-weight: bold;
+        }
+        
+        .tip {
+            color: #56cfff;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .terminal-body {
+                padding: 15px;
+            }
+            
+            .stats {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sound-control" id="sound-toggle">
+        <i class="fas fa-volume-up"></i>
+    </div>
+    
+    <div class="container">
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-btn close"></div>
+                    <div class="terminal-btn minimize"></div>
+                    <div class="terminal-btn maximize"></div>
+                </div>
+                <div>user@ccna-quiz: ~/game</div>
+                <div></div>
+            </div>
+            
+            <div class="terminal-body">
+                <!-- Start Screen -->
+                <div id="start-screen" class="screen">
+                    <h1>CCNA CYBER TERMINAL QUIZ 🕷️SpydoByte </h1>
+                    <div class="command-line">
+                        <span class="prompt">Shan@ccna-quiz:~$</span>
+                        <span>cat welcome_message.txt</span>
+                    </div>
+                    <p>Test your networking knowledge across 10 levels of increasing difficulty. Answer carefully - 4 wrong answers and the system will terminate your session!</p>
+                    <div class="stats">
+                        <div class="stat-box">
+                            <div>Levels</div>
+                            <div class="stat-value">10</div>
+                        </div>
+                        <div class="stat-box">
+                            <div>Questions</div>
+                            <div class="stat-value">100</div>
+                        </div>
+                        <div class="stat-box">
+                            <div>Lives</div>
+                            <div class="stat-value">4</div>
+                        </div>
+                    </div>
+                    <div class="content-box">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Warning</h3>
+                        <p>Questions are randomly ordered each time you play. There's no pattern to follow!</p>
+                    </div>
+                    <button id="start-btn" class="btn">BEGIN QUIZ >></button>
+                </div>
+                
+                <!-- Game Screen -->
+                <div id="game-screen" class="screen">
+                    <div class="command-line">
+                        <span class="prompt">Shan@ccna-quiz:~$</span>
+                        <span>run quiz --level <span id="level">1</span> --question <span id="current-question">1</span></span>
+                    </div>
+                    <div class="level-indicator">LEVEL <span id="level-display">1</span></div>
+                    <div class="question-number">QUESTION <span id="question-number">1</span>/10</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="question-progress"></div>
+                    </div>
+                    <div class="stats">
+                        <div class="stat-box">
+                            <div>Score</div>
+                            <div class="stat-value" id="score">0</div>
+                        </div>
+                        <div class="stat-box">
+                            <div>Wrong Answers</div>
+                            <div class="stat-value" id="wrong-answers">0/4</div>
+                        </div>
+                    </div>
+                    <div class="question-text" id="question">What does CCNA stand for?</div>
+                    <div id="options-container">
+                        <button class="btn option-btn">Option 1</button>
+                        <button class="btn option-btn">Option 2</button>
+                        <button class="btn option-btn">Option 3</button>
+                        <button class="btn option-btn">Option 4</button>
+                    </div>
+                </div>
+                
+                <!-- Level Up Screen -->
+                <div id="level-up-screen" class="screen">
+                    <div class="command-line">
+                        <span class="prompt">user@ccna-quiz:~$</span>
+                        <span>level_up.sh</span>
+                    </div>
+                    <div class="level-up">
+                        <h2>LEVEL COMPLETE!</h2>
+                        <p>Access granted to Level <span id="new-level">2</span></p>
+                        <button id="continue-btn" class="btn">CONTINUE >></button>
+                    </div>
+                </div>
+                
+                <!-- Game Over Screen -->
+                <div id="game-over-screen" class="screen">
+                    <div class="command-line">
+                        <span class="prompt">user@ccna-quiz:~$</span>
+                        <span>status_report.sh</span>
+                    </div>
+                    <div class="game-over">
+                        <h2>SESSION TERMINATED</h2>
+                        <p>Too many incorrect answers detected</p>
+                        <div class="final-score" id="final-score">0</div>
+                        <p>System security protocols require termination of your session</p>
+                        <button id="restart-btn" class="btn">RESTART QUIZ >></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio elements for sound effects -->
+    <audio id="correct-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" preload="auto"></audio>
+    <audio id="wrong-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" preload="auto"></audio>
+    <audio id="game-over-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-funny-fail-low-tone-2876.mp3" preload="auto"></audio>
+    <audio id="level-up-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
+
+    <script>
+        // Game variables
+        let currentLevel = 1;
+        let currentQuestion = 1;
+        let score = 0;
+        let wrongAnswers = 0;
+        let questions = [];
+        let soundEnabled = true;
+        
+        // DOM elements
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const levelUpScreen = document.getElementById('level-up-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        
+        const startBtn = document.getElementById('start-btn');
+        const continueBtn = document.getElementById('continue-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const soundToggle = document.getElementById('sound-toggle');
+        
+        const levelElement = document.getElementById('level');
+        const levelDisplayElement = document.getElementById('level-display');
+        const currentQuestionElement = document.getElementById('current-question');
+        const questionNumberElement = document.getElementById('question-number');
+        const questionProgressElement = document.getElementById('question-progress');
+        const scoreElement = document.getElementById('score');
+        const wrongAnswersElement = document.getElementById('wrong-answers');
+        const questionElement = document.getElementById('question');
+        const optionsContainer = document.getElementById('options-container');
+        const newLevelElement = document.getElementById('new-level');
+        const finalScoreElement = document.getElementById('final-score');
+        
+        // Audio elements
+        const correctSound = document.getElementById('correct-sound');
+        const wrongSound = document.getElementById('wrong-sound');
+        const gameOverSound = document.getElementById('game-over-sound');
+        const levelUpSound = document.getElementById('level-up-sound');
+        
+        // Question database
+        const questionDatabase = [
+            // Level 1 questions (Easy)
+            [
+                {
+                    question: "What does CCNA stand for?",
+                    options: [
+                        "Cisco Certified Network Associate",
+                        "Computer Connectivity and Networking Administration",
+                        "Critical Communications Network Access",
+                        "Certified Computer Networking Administrator"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which protocol is used for secure remote access to network devices?",
+                    options: [
+                        "HTTP",
+                        "Telnet",
+                        "SSH",
+                        "FTP"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the default subnet mask for a Class C IP address?",
+                    options: [
+                        "255.0.0.0",
+                        "255.255.0.0",
+                        "255.255.255.0",
+                        "255.255.255.255"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which layer of the OSI model is responsible for routing?",
+                    options: [
+                        "Physical",
+                        "Data Link",
+                        "Network",
+                        "Transport"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the purpose of ARP?",
+                    options: [
+                        "To resolve IP addresses to MAC addresses",
+                        "To resolve domain names to IP addresses",
+                        "To assign IP addresses dynamically",
+                        "To encrypt network traffic"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which command shows the routing table on a Cisco router?",
+                    options: [
+                        "show ip route",
+                        "show route",
+                        "display ip route",
+                        "show routing table"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "What is the range of port numbers from 0 to 1023 called?",
+                    options: [
+                        "Well-known ports",
+                        "Registered ports",
+                        "Dynamic ports",
+                        "Ephemeral ports"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which protocol is used by ping command?",
+                    options: [
+                        "TCP",
+                        "UDP",
+                        "ICMP",
+                        "IGMP"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What does VLAN stand for?",
+                    options: [
+                        "Virtual Local Area Network",
+                        "Very Large Area Network",
+                        "Variable Length Access Node",
+                        "Virtualized Logical Access Network"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which device operates at the Data Link layer of the OSI model?",
+                    options: [
+                        "Router",
+                        "Hub",
+                        "Switch",
+                        "Repeater"
+                    ],
+                    correct: 2
+                }
+            ],
+            // Level 2 questions (Slightly harder)
+            [
+                {
+                    question: "What is the administrative distance of OSPF?",
+                    options: [
+                        "90",
+                        "100",
+                        "110",
+                        "120"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "Which spanning-tree protocol provides the fastest convergence?",
+                    options: [
+                        "STP",
+                        "RSTP",
+                        "MSTP",
+                        "PVST+"
+                    ],
+                    correct: 1
+                },
+                {
+                    question: "What is the first step in the three-way handshake?",
+                    options: [
+                        "SYN",
+                        "SYN-ACK",
+                        "ACK",
+                        "FIN"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which IPv6 address type is equivalent to IPv4's public addresses?",
+                    options: [
+                        "Link-local",
+                        "Unique local",
+                        "Global unicast",
+                        "Multicast"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What does NAT stand for?",
+                    options: [
+                        "Network Address Translation",
+                        "Network Allocation Table",
+                        "Node Authentication Technology",
+                        "Network Access Tunneling"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which protocol uses port 443?",
+                    options: [
+                        "HTTP",
+                        "FTP",
+                        "HTTPS",
+                        "SSH"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the purpose of a default gateway?",
+                    options: [
+                        "To connect different networks",
+                        "To filter network traffic",
+                        "To assign IP addresses",
+                        "To provide wireless access"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which command is used to test network connectivity?",
+                    options: [
+                        "ipconfig",
+                        "tracert",
+                        "ping",
+                        "nslookup"
+                    ],
+                    correct: 2
+                },
+                {
+                    question: "What is the binary equivalent of the decimal number 192?",
+                    options: [
+                        "11000000",
+                        "10101000",
+                        "11001100",
+                        "11110000"
+                    ],
+                    correct: 0
+                },
+                {
+                    question: "Which wireless standard operates at 5 GHz?",
+                    options: [
+                        "802.11b",
+                        "802.11g",
+                        "802.11n",
+                        "802.11ac"
+                    ],
+                    correct: 3
+                }
+            ],
+            // Additional levels would be defined here with increasing difficulty
+        ];
+        
+        // Initialize the game
+        function initGame() {
+            loadLevel(currentLevel);
+            updateUI();
+        }
+        
+        // Load questions for the current level
+        function loadLevel(level) {
+            // For demo, we use level 1 and 2 questions
+            // In a full game, we would have 10 levels
+            if (level <= 2) {
+                // Shuffle the questions for this level
+                questions = [...questionDatabase[level - 1]];
+                shuffleArray(questions);
+            } else {
+                // For levels beyond 2, we'll reuse level 2 questions in this demo
+                questions = [...questionDatabase[1]];
+                shuffleArray(questions);
+            }
+        }
+        
+        // Fisher-Yates shuffle algorithm to jumble questions
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // Update the UI with current game state
+        function updateUI() {
+            levelElement.textContent = currentLevel;
+            levelDisplayElement.textContent = currentLevel;
+            currentQuestionElement.textContent = currentQuestion;
+            questionNumberElement.textContent = currentQuestion;
+            scoreElement.textContent = score;
+            wrongAnswersElement.textContent = `${wrongAnswers}/4`;
+            questionProgressElement.style.width = `${((currentQuestion - 1) / 10) * 100}%`;
+            
+            if (currentQuestion <= 10) {
+                showQuestion(questions[currentQuestion - 1]);
+            } else {
+                levelComplete();
+            }
+        }
+        
+        // Display a question
+        function showQuestion(question) {
+            questionElement.textContent = question.question;
+            
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+            
+            // Add new options
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'btn option-btn';
+                button.textContent = option;
+                button.addEventListener('click', () => checkAnswer(index, question.correct, button));
+                optionsContainer.appendChild(button);
+            });
+        }
+        
+        // Play a sound if sound is enabled
+        function playSound(sound) {
+            if (soundEnabled) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log("Audio play error:", e));
+            }
+        }
+        
+        // Check if the selected answer is correct
+        function checkAnswer(selected, correct, button) {
+            if (selected === correct) {
+                // Correct answer
+                button.classList.add('correct');
+                score += currentLevel * 10; // More points for higher levels
+                scoreElement.textContent = score;
+                playSound(correctSound);
+                
+                // Wait a bit then move to next question
+                setTimeout(() => {
+                    currentQuestion++;
+                    updateUI();
+                }, 1000);
+            } else {
+                // Incorrect answer
+                button.classList.add('incorrect');
+                wrongAnswers++;
+                wrongAnswersElement.textContent = `${wrongAnswers}/4`;
+                playSound(wrongSound);
+                
+                if (wrongAnswers >= 4) {
+                    // Game over
+                    setTimeout(() => {
+                        playSound(gameOverSound);
+                        gameOver();
+                    }, 1000);
+                } else {
+                    // Wait a bit then move to next question
+                    setTimeout(() => {
+                        currentQuestion++;
+                        updateUI();
+                    }, 1000);
+                }
+            }
+            
+            // Disable all buttons after selection
+            const allButtons = optionsContainer.querySelectorAll('.option-btn');
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+            });
+        }
+        
+        // Handle level completion
+        function levelComplete() {
+            if (currentLevel < 10) {
+                playSound(levelUpSound);
+                currentLevel++;
+                currentQuestion = 1;
+                loadLevel(currentLevel);
+                newLevelElement.textContent = currentLevel;
+                
+                // Show level up screen
+                gameScreen.style.display = 'none';
+                levelUpScreen.style.display = 'block';
+            } else {
+                // Game completed
+                playSound(levelUpSound);
+                finalScoreElement.textContent = score;
+                gameScreen.style.display = 'none';
+                gameOverScreen.style.display = 'block';
+                document.querySelector('.game-over h2').textContent = 'MISSION ACCOMPLISHED!';
+                document.querySelector('.game-over p').textContent = 'You have successfully completed all levels!';
+            }
+        }
+        
+        // Handle game over
+        function gameOver() {
+            finalScoreElement.textContent = score;
+            gameScreen.style.display = 'none';
+            gameOverScreen.style.display = 'block';
+        }
+        
+        // Restart the game
+        function restartGame() {
+            currentLevel = 1;
+            currentQuestion = 1;
+            score = 0;
+            wrongAnswers = 0;
+            
+            loadLevel(currentLevel);
+            updateUI();
+            
+            gameOverScreen.style.display = 'none';
+            startScreen.style.display = 'block';
+        }
+        
+        // Toggle sound on/off
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = soundToggle.querySelector('i');
+            if (soundEnabled) {
+                icon.className = 'fas fa-volume-up';
+            } else {
+                icon.className = 'fas fa-volume-mute';
+            }
+        }
+        
+        // Event listeners
+        startBtn.addEventListener('click', () => {
+            startScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+            initGame();
+        });
+        
+        continueBtn.addEventListener('click', () => {
+            levelUpScreen.style.display = 'none';
+            gameScreen.style.display = 'block';
+            updateUI();
+        });
+        
+        restartBtn.addEventListener('click', restartGame);
+        
+        soundToggle.addEventListener('click', toggleSound);
+        
+        // Initialize the start screen
+        window.onload = () => {
+            startScreen.style.display = 'block';
+            gameScreen.style.display = 'none';
+            levelUpScreen.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+        };
+    </script>
+</body>
+</html>
